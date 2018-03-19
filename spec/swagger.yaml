@@ -244,9 +244,9 @@ definitions:
         description: "The matched entities within the text"
         items:
           type: "string"
-      suggestedAction:
+      suggestedActions:
         type: "array"
-        description: "Suggested action to take given the classification of the text and the current context of the conversation."
+        description: "A list of suggested actions to take given the classification of the text and the current context of the conversation."
         items: 
           $ref: "#/definitions/Action"
       email:
