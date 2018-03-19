@@ -48,12 +48,16 @@ paths:
           description: "Invalid request. Api response will have more context."
           schema:  
             $ref: "#/definitions/ApiResponse" 
+        422:
+          description: "Invalid data passed."
+          schema:  
+            $ref: "#/definitions/ValidationResponse" 
         200:
           description: "successful operation"
           schema:
             $ref: "#/definitions/ClassifiedEntry"  
       security:
-        - api_key: []
+        - apiKey: []
   /conversation/click/{conversationId}:
     post:
       tags:
@@ -86,12 +90,16 @@ paths:
           description: "Invalid request. Api response will have more context."
           schema:  
             $ref: "#/definitions/ApiResponse" 
+        422:
+          description: "Invalid data passed."
+          schema:  
+            $ref: "#/definitions/ValidationResponse" 
         200:
           description: "successful operation"
           schema:
             $ref: "#/definitions/ClassifiedEntry"  
       security:
-        - api_key: []
+        - apiKey: []
   /conversation/add-context/{conversationId}:
     put:
       tags:
@@ -124,12 +132,16 @@ paths:
           description: "Invalid request. Api response will have more context."
           schema:  
             $ref: "#/definitions/ApiResponse" 
+        422:
+          description: "Invalid data passed."
+          schema:  
+            $ref: "#/definitions/ValidationResponse" 
         200:
           description: "Successfull response"
           schema:  
             $ref: "#/definitions/ApiResponse"
       security:
-        - api_key: []
+        - apiKey: []
   /conversation/configure/{conversationId}:
     put:
       tags:
@@ -162,12 +174,16 @@ paths:
           description: "Invalid request. Api response will have more context."
           schema:  
             $ref: "#/definitions/ApiResponse" 
+        422:
+          description: "Invalid data passed."
+          schema:  
+            $ref: "#/definitions/ValidationResponse" 
         200:
           description: "Successfull response"
           schema:  
             $ref: "#/definitions/ApiResponse"
       security:
-        - api_key: []
+        - apiKey: []
   /conversation/context/{conversationId}:      
     delete:
       tags:
@@ -193,17 +209,22 @@ paths:
         400:
           description: "Invalid request. Api response will have more context."
           schema:  
-            $ref: "#/definitions/ApiResponse" 
+            $ref: "#/definitions/ApiResponse"         
+        422:
+          description: "Invalid data passed."
+          schema:  
+            $ref: "#/definitions/ValidationResponse" 
         200:
           description: "Successfull response"
           schema:  
             $ref: "#/definitions/ApiResponse"
       security:
-        - api_key: []
+        - apiKey: []
 securityDefinitions:
-  api_key:
+  apiKey:
     type: "apiKey"
-    name: "api_key"
+    name: "Authorization"
+    description: "Api key needs to be passed in the Authorization header in format Authorization: APIKEY your_key."
     in: "header"
 definitions:
   ClassifiedEntry:
@@ -282,10 +303,30 @@ definitions:
       code:
         type: "integer"
         format: "int32"
+        description: "A unique integer code that can be used to switch on."
       type:
         type: "string"
+        description: "The response type."
+        enum:
+          - "error"
+          - "success"
       message:
         type: "string"
+        description: "A description of response. In the case of an error this can be used to debug."
+  ValidationResponse:
+    type: "object"
+    properties:
+      errors: 
+        type: array
+        items:
+          type: object
+          properties:
+            field: 
+              type: "string"
+              description: "The field that is unacceptable."
+            message:
+              type: "string"
+              description: "A error message relating to the field."
   Action:
     type: "object"
     properties:
