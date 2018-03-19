@@ -189,7 +189,7 @@ paths:
       tags:
       - "conversation"
       summary: "Flush the conversation context."
-      description: "Change configruation about conversation session storage length."
+      description: "Delete the current conversation context."
       operationId: "deleteConversation"
       consumes:
       - "application/json"
