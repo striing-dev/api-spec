@@ -1,0 +1,11 @@
+{
+  "generator-openapi-repo": {
+    "importExistingSpec": true,
+    "importedSpec": "/Users/hugorut/Code/api-spec/spec.yaml",
+    "name": "striing",
+    "repo": "striing-dev/api-spec",
+    "splitSpec": false,
+    "samples": false,
+    "installSwaggerUI": true
+  }
+}
