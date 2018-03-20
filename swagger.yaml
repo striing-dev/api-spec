@@ -1,0 +1,350 @@
+swagger: '2.0'
+info:
+  description: This is a template of the Striing API.
+  version: 1.0.0
+  title: Striing API
+  contact:
+    email: help@striing.io
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: api.striing.io
+basePath: /v1
+tags:
+  - name: conversation
+    description: Endpoints used to configure/initialize/manipulate a user converation
+schemes:
+  - https
+paths:
+  '/conversation/classify/{conversationId}':
+    post:
+      tags:
+        - conversation
+      summary: Classify a new conversation entry.
+      description: Should be used when wanting to classify a stream of text from a conversation. Will return a suggested list of actions with which to use in the conversation. As well as providing intent and entity information.
+      operationId: classifyConversation
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: apiKey
+          in: header
+          required: true
+          type: string
+        - name: conversationId
+          in: path
+          description: ID of the conversation that needs classification
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Conversation data needed to classify the input
+          required: true
+          schema:
+            $ref: '#/definitions/ConversationEntry'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ClassifiedEntry'
+        '400':
+          description: Invalid request. Api response will have more context.
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '422':
+          description: Invalid data passed.
+          schema:
+            $ref: '#/definitions/ValidationResponse'
+      security:
+        - apiKey: []
+  '/conversation/click/{conversationId}':
+    post:
+      tags:
+        - conversation
+      summary: Action a UI element within a conversation.
+      description: Should be used when a user actions a UI elment provided. Will return a suggested list of actions with which to use in the conversation. As well as providing intent and entity information.
+      operationId: clickConversation
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: apiKey
+          in: header
+          required: true
+          type: string
+        - name: conversationId
+          in: path
+          description: ID of the conversation that needs classification
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Payload data from the UI element
+          required: true
+          schema:
+            $ref: '#/definitions/PayloadEntry'
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/ClassifiedEntry'
+        '400':
+          description: Invalid request. Api response will have more context.
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '422':
+          description: Invalid data passed.
+          schema:
+            $ref: '#/definitions/ValidationResponse'
+      security:
+        - apiKey: []
+  '/conversation/add-context/{conversationId}':
+    put:
+      tags:
+        - conversation
+      summary: Add contextual information to a conversation.
+      description: 'Should be used when providing contextual information about events that have happened within the conversation, i.e. when a user has payed basket.'
+      operationId: addContext
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: apiKey
+          in: header
+          required: true
+          type: string
+        - name: conversationId
+          in: path
+          description: ID of the conversation that needs classification
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Contextual data to add to the conversation
+          required: true
+          schema:
+            $ref: '#/definitions/Context'
+      responses:
+        '200':
+          description: Successfull response
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Invalid request. Api response will have more context.
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '422':
+          description: Invalid data passed.
+          schema:
+            $ref: '#/definitions/ValidationResponse'
+      security:
+        - apiKey: []
+  '/conversation/configure/{conversationId}':
+    put:
+      tags:
+        - conversation
+      summary: Update the conversation configuration.
+      description: Change configruation about conversation session storage length.
+      operationId: configureConversation
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: apiKey
+          in: header
+          required: true
+          type: string
+        - name: conversationId
+          in: path
+          description: ID of the conversation that needs classification
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Configuration data to update within the conversation.
+          required: true
+          schema:
+            $ref: '#/definitions/ConversationConfiguration'
+      responses:
+        '200':
+          description: Successfull response
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Invalid request. Api response will have more context.
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '422':
+          description: Invalid data passed.
+          schema:
+            $ref: '#/definitions/ValidationResponse'
+      security:
+        - apiKey: []
+  '/conversation/context/{conversationId}':
+    delete:
+      tags:
+        - conversation
+      summary: Flush the conversation context.
+      description: Delete the current conversation context.
+      operationId: deleteConversation
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: apiKey
+          in: header
+          required: true
+          type: string
+        - name: conversationId
+          in: path
+          description: ID of the conversation that needs classification
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Successfull response
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Invalid request. Api response will have more context.
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '422':
+          description: Invalid data passed.
+          schema:
+            $ref: '#/definitions/ValidationResponse'
+      security:
+        - apiKey: []
+securityDefinitions:
+  apiKey:
+    type: apiKey
+    name: Authorization
+    description: 'Api key needs to be passed in the Authorization header in format Authorization: APIKEY your_key.'
+    in: header
+definitions:
+  ClassifiedEntry:
+    type: object
+    properties:
+      initialText:
+        type: string
+        description: The input string of text used to return this classified intent.
+      correctedText:
+        type: string
+        description: The input string of text corrected for spelling and gramatical errors.
+      intent:
+        type: string
+        description: The matched intent of the entry.
+      entities:
+        type: array
+        description: The matched entities within the text
+        items:
+          type: object
+      suggestedActions:
+        type: array
+        description: A list of suggested actions to take given the classification of the text and the current context of the conversation.
+        items:
+          $ref: '#/definitions/Action'
+  Context:
+    type: object
+    required:
+      - contexts
+    properties:
+      contexts:
+        type: array
+        description: An array of contexts to add.
+        items:
+          type: string
+          enum:
+            - payed
+            - ordered
+            - closed
+  PayloadEntry:
+    type: object
+    required:
+      - payload
+    properties:
+      payload:
+        type: string
+        description: The payload of the UI element actioned.
+  ConversationEntry:
+    type: object
+    required:
+      - text
+    properties:
+      text:
+        type: string
+        description: A text string of the desired conversation to be classified. Limited to 200 characters.
+  ConversationConfiguration:
+    type: object
+    required:
+      - keepAlive
+    properties:
+      keepAlive:
+        type: integer
+        description: 'How long to keep alive session data for, in seconds. The default setting is a day (86400).'
+  ApiResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: A unique integer code that can be used to switch on.
+      type:
+        type: string
+        description: The response type.
+        enum:
+          - error
+          - success
+      message:
+        type: string
+        description: A description of response. In the case of an error this can be used to debug.
+  ValidationResponse:
+    type: object
+    properties:
+      errors:
+        type: array
+        items:
+          type: object
+          properties:
+            field:
+              type: string
+              description: The field that is unacceptable.
+            message:
+              type: string
+              description: A error message relating to the field.
+  Action:
+    type: object
+    properties:
+      text:
+        type: string
+        description: A text string to use to reply within the conversation.
+      ui:
+        type: array
+        description: A list of UI elements that can be displayed
+        items:
+          $ref: '#/definitions/UIElement'
+  UIElement:
+    type: object
+    description: A structured representation of a UI element.
+    properties:
+      type:
+        type: string
+        description: The type of UI element which is suggested to display.
+        enum:
+          - button
+          - listItem
+          - reply
+      title:
+        type: string
+      description:
+        type: string
+      image:
+        type: string
+      payload:
+        type: string
+        description: A key to pass to the /conversation/click endpoint when actioned.
