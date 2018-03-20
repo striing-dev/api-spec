@@ -249,16 +249,6 @@ definitions:
         description: "A list of suggested actions to take given the classification of the text and the current context of the conversation."
         items: 
           $ref: "#/definitions/Action"
-      email:
-        type: "string"
-      password:
-        type: "string"
-      phone:
-        type: "string"
-      userStatus:
-        type: "integer"
-        format: "int32"
-        description: "User Status"
   Context:
     type: "object"
     required:
