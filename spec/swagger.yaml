@@ -243,7 +243,7 @@ definitions:
         type: "array"
         description: "The matched entities within the text"
         items:
-          type: "string"
+          type: "object"
       suggestedActions:
         type: "array"
         description: "A list of suggested actions to take given the classification of the text and the current context of the conversation."
